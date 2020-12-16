@@ -1,0 +1,7 @@
+<h1 mat-dialog-title>{{data.title}}</h1>
+<div mat-dialog-content [ngSwitch]="data.type">
+  <mat-icon aria-hidden="false" aria-label="Ok" *ngSwitchCase="messageType.success">thumb_up</mat-icon>
+  <mat-icon aria-hidden="false" aria-label="Warning" *ngSwitchCase="messageType.warning">warning</mat-icon>
+  <mat-icon aria-hidden="false" aria-label="Error" *ngSwitchCase="messageType.error">error</mat-icon>
+  {{data.message}}
+</div>

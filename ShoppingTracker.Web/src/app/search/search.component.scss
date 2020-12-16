@@ -1,0 +1,38 @@
+.grid {
+    display: grid;
+    grid-template-columns: repeat(8, 1fr);
+    border-top: 1px solid rgb(56, 56, 56);
+    border-right: 1px solid rgb(56, 56, 56);
+}
+.grid > span:nth-child(2) { grid-column: span 5; }
+
+.grid > span {
+    padding: 8px 4px;
+    border-left: 1px solid rgb(56, 56, 56);
+    border-bottom: 1px solid rgb(56, 56, 56);
+}
+
+.name {
+    font-weight: bold;
+}
+
+.classification {
+    font-size: 8px;
+    font-style: italic;
+}
+
+.platform {
+    font-size: 8px;
+}
+
+.oldprice {    
+    text-decoration: line-through;
+}
+
+.discounted {
+    color: red;
+}
+
+.notDiscounted{
+    visibility: hidden;
+}

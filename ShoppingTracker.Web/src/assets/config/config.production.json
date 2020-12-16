@@ -1,0 +1,9 @@
+{
+    "env": {
+        "name": "PRODUCTION"
+    },
+    "api": {
+        "url": "",
+        "key": ""
+    }
+}
