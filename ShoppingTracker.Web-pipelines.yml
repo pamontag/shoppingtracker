@@ -31,6 +31,6 @@ steps:
  
 - task: PublishPipelineArtifact@1
   inputs:
-    targetPath: '$(Pipeline.Workspace)\dist\'
-    artifact: 'ShoppingTracker.Web/'
+    targetPath: '$(Pipeline.Workspace)/dist/'
+    artifact: 'ShoppingTracker.Web'
     publishLocation: 'pipeline'
