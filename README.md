@@ -1,2 +1,2 @@
 # shoppingtracker
-A discont tracker for favorites products
+A discount tracker for favorites products
