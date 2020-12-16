@@ -18,7 +18,7 @@ steps:
   inputs:
     command: 'publish'
     publishWebProjects: false
-    projects: '.ShoppingTracker.WebApi/ShoppingTracker.WebApi.csproj'
+    projects: './ShoppingTracker.WebApi/ShoppingTracker.WebApi.csproj'
     arguments: '-o "$(Pipeline.Workspace)/output" -c "Release"'
     modifyOutputPath: false
 
