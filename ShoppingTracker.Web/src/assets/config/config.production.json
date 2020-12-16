@@ -3,7 +3,6 @@
         "name": "PRODUCTION"
     },
     "api": {
-        "url": "",
-        "key": ""
+        "url": "https://shoppingtrackerrestapi.azurewebsites.net"
     }
 }
