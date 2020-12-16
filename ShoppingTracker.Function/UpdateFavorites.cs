@@ -14,7 +14,7 @@ namespace ShoppingTracker.Function
     public static class UpdateFavorites
     {
         [FunctionName("UpdateFavorites")]      
-        public static async Task Run([TimerTrigger("0 */1 * * * *")]TimerInfo myTimer, ILogger log, ExecutionContext context)
+        public static async Task Run([TimerTrigger("0 */30 * * * *")]TimerInfo myTimer, ILogger log, ExecutionContext context)
         {
             log.LogInformation($"C# Timer trigger function executed at: {DateTime.Now}");
             var config = new ConfigurationBuilder()
