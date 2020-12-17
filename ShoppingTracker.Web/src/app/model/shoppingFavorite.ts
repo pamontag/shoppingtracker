@@ -22,4 +22,11 @@ export interface ShoppingFavorite {
     rowKey?: string;
     timestamp?: Date;
     eTag?: string;
+    store: Stores;
+}
+
+export enum Stores {
+    PSStore,
+    GameStop,
+    Amazon
 }

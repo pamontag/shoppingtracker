@@ -17,7 +17,8 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatGridListModule } from '@angular/material/grid-list';
 import { MatCardModule } from '@angular/material/card';
-import {MatDialogModule} from '@angular/material/dialog';
+import { MatDialogModule } from '@angular/material/dialog';
+import { MatSelectModule } from '@angular/material/select';
 
 import { HttpClientModule } from '@angular/common/http';
 import { DialogComponent } from './dialog/dialog.component';
@@ -56,6 +57,7 @@ export function initializeApp(appConfig: AppConfig) {
     MatGridListModule,
     MatCardModule,
     MatDialogModule,
+    MatSelectModule,
     FormsModule,
     HttpClientModule,
     PsStoreFavoritesClient.forRoot(createApiConfigFactory)
@@ -67,6 +69,7 @@ export function initializeApp(appConfig: AppConfig) {
     MatIconModule,
     MatGridListModule,
     MatCardModule,
+    MatSelectModule,
     DialogComponent
   ],
   providers: [AppConfig,

@@ -5,6 +5,7 @@ import { HttpClient } from '@angular/common/http';
 
 import { FavoritesService } from './api/favorites.service';
 import { PsStoreService } from './api/psStore.service';
+import { AmazonService } from './api/amazon.service';
 
 @NgModule({
   imports:      [],
@@ -12,7 +13,8 @@ import { PsStoreService } from './api/psStore.service';
   exports:      [],
   providers: [
     FavoritesService,
-    PsStoreService ]
+    PsStoreService,
+    AmazonService ]
 })
 export class ApiModule {
     public static forRoot(configurationFactory: () => Configuration): ModuleWithProviders {

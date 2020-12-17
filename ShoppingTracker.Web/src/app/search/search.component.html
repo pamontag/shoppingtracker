@@ -1,24 +1,31 @@
+<mat-form-field [style.width.px]="100"> 
+  <mat-select placeholder="Select Store" [(ngModel)]="selectedStore" (selectionChange)="emptySearch()" >
+    <mat-option *ngFor="let store of enumStores" [value]="store">
+      {{stores[store]}}
+    </mat-option>
+  </mat-select>
+</mat-form-field>
 <mat-form-field [style.width.px]="300">
-  <mat-label>Search a game</mat-label>
+  <mat-label>Search a product</mat-label>
   <input matInput [(ngModel)]="searchText" />
 </mat-form-field>
 <button
   mat-icon-button
   color="primary"
   aria-label="Search"
-  (click)="searchGames()"
+  (click)="searchproducts()"
 >
   <mat-icon>search</mat-icon>
 </button>
 <div>
-  <div class="grid" *ngFor="let game of games">
+  <div class="grid" *ngFor="let product of products">
     <span
-      ><img mat-card-image width="75" height="75" src="{{ game.media }}"
+      ><img mat-card-image width="75" height="75" src="{{ product.media }}"
     /></span>
-    <span><div class="name">{{ game.name }}</div><div class="classification">{{ game.classification }}</div><div class="platform">{{ game.platform }}</div></span> 
-    <span><div [ngClass]="{'oldprice': game.discount}">{{ game.price }}</div><div [ngClass]="{'discounted': game.discount, 'notDiscounted' : !game.discount}">{{ game.discountedPrice }}</div><div>{{ game.discount }}</div></span>
+    <span><div class="name">{{ product.name }}</div><div class="classification">{{ product.classification }}</div><div class="platform">{{ product.platform }}</div></span> 
+    <span><div [ngClass]="{'oldprice': product.discount}">{{ product.price }}</div><div [ngClass]="{'discounted': product.discount, 'notDiscounted' : !product.discount}">{{ product.discountedPrice }}</div><div>{{ product.discount }}</div></span>
     <span
-      ><button mat-icon-button color="primary" aria-label="Search" (click)="addToFavorites(game)">
+      ><button mat-icon-button color="primary" aria-label="Search" (click)="addToFavorites(product)">
         <mat-icon>favorites</mat-icon>
       </button></span
     >

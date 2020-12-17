@@ -16,8 +16,6 @@ namespace ShoppingTracker.WebApi.Controllers
     [Route("[controller]")]
     public class PsStoreController : ControllerBase
     { 
-        //https://web.np.playstation.com/api/graphql/v1//op?operationName=getSearchResults&variables=%7B%22countryCode%22%3A%22IT%22%2C%22languageCode%22%3A%22it%22%2C%22pageOffset%22%3A0%2C%22pageSize%22%3A48%2C%22searchTerm%22%3A%22survivalists%22%7D&extensions=%7B%22persistedQuery%22%3A%7B%22version%22%3A1%2C%22sha256Hash%22%3A%22d7d773f7497d9aba365bbab376ed349f15bac9a8cd3c879e5a476587aa397e66%22%7D%7D
-        //x-psn-store-locale-override it-IT
         private readonly ILogger<PsStoreController> _logger;
         private readonly string _urlStore;
 
@@ -31,9 +29,9 @@ namespace ShoppingTracker.WebApi.Controllers
         }
 
         [HttpGet]
-        public async Task<IEnumerable<GamePrice>> SearchGames(string gamename)
+        public async Task<IEnumerable<ProductPrice>> SearchGames(string gamename)
         {
-            var games = new List<GamePrice>();
+            var games = new List<ProductPrice>();
             using HttpClient client = new HttpClient();
             client.DefaultRequestHeaders.Add("x-psn-store-locale-override", "it-IT");
             HttpResponseMessage response = await client.GetAsync(String.Format(_urlStore,gamename));
@@ -42,15 +40,15 @@ namespace ShoppingTracker.WebApi.Controllers
                 var jsonResponse = await response.Content.ReadAsStringAsync();
                 var searchResult = JsonConvert.DeserializeObject<SearchResult>(jsonResponse);
                 foreach(var game in searchResult.data.universalSearch.items) {
-                    games.Add(new GamePrice() {
+                    games.Add(new ProductPrice() {
                         Name = game.name,
                         Classification = game.localizedStoreDisplayClassification,
-                        Discount = game.price.discountText,
-                        DiscountedPrice = game.price.discountedPrice,
+                        Discount = game.price != null ? game.price.discountText : null,
+                        DiscountedPrice = game.price != null ? game.price.discountedPrice : null,
                         Id = game.id,
-                        Media = game.media.SingleOrDefault(m => m.role == "MASTER") != null ? game.media.SingleOrDefault(m => m.role == "MASTER").url : null,
+                        Media = game.media != null && game.media.SingleOrDefault(m => m.role == "MASTER") != null ? game.media.SingleOrDefault(m => m.role == "MASTER").url : null,
                         Platform = string.Join(",",game.platforms),
-                        Price = game.price.basePrice
+                        Price = game.price != null ? game.price.basePrice : null
                     });
                 }
                 return games;                
@@ -59,7 +57,7 @@ namespace ShoppingTracker.WebApi.Controllers
         }
 
         [HttpPost]
-        public async Task<ShoppingFavorite> AddToFavorites(GamePrice game)
+        public async Task<ShoppingFavorite> AddToFavorites(ProductPrice game)
         {
             var shoppingFavorite = new ShoppingFavorite(ShopTypeEnum.PSStore,game.Id) {
                 Name = game.Name,
@@ -68,7 +66,8 @@ namespace ShoppingTracker.WebApi.Controllers
                 DiscountedPrice = game.DiscountedPrice,
                 FavoritesDate = DateTime.Now,
                 Price = game.Price,
-                Media = game.Media
+                Media = game.Media,
+                Store = ShopTypeEnum.PSStore
             };
             var table = await ShoppingTrackerDAL.CreateTableAsync(ShoppingTrackerDAL.SHOPPING_FAVORITES_TABLE);
             var favorite = await ShoppingTrackerDAL.InsertOrMergeShoppingFavoriteAsync(table,shoppingFavorite);

@@ -10,7 +10,7 @@
  * Do not edit the class manually.
  */
 
-export interface GamePrice {
+export interface ProductPrice {
     id?: string;
     platform?: string;
     classification?: string;

@@ -20,6 +20,8 @@ namespace ShoppingTracker.Core.Models
         public DateTime? DiscountDate {get; set;}
         public DateTime FavoritesDate {get; set;}
         public string Media{get; set;}
+
+        public ShopTypeEnum Store { get; set;}
         
     }
 

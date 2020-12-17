@@ -17,7 +17,7 @@ import { CustomHttpUrlEncodingCodec }                        from '../encoder';
 
 import { Observable }                                        from 'rxjs';
 
-import { GamePrice, ShoppingFavorite  } from '../../../model/models'; 
+import { ProductPrice, ShoppingFavorite  } from '../../../model/models'; 
 
 import { BASE_PATH, COLLECTION_FORMATS }                     from '../variables';
 import { Configuration }                                     from '../configuration';
@@ -62,9 +62,9 @@ export class PsStoreService {
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public psStoreGet(gamename?: string, observe?: 'body', reportProgress?: boolean): Observable<Array<GamePrice>>;
-    public psStoreGet(gamename?: string, observe?: 'response', reportProgress?: boolean): Observable<HttpResponse<Array<GamePrice>>>;
-    public psStoreGet(gamename?: string, observe?: 'events', reportProgress?: boolean): Observable<HttpEvent<Array<GamePrice>>>;
+    public psStoreGet(gamename?: string, observe?: 'body', reportProgress?: boolean): Observable<Array<ProductPrice>>;
+    public psStoreGet(gamename?: string, observe?: 'response', reportProgress?: boolean): Observable<HttpResponse<Array<ProductPrice>>>;
+    public psStoreGet(gamename?: string, observe?: 'events', reportProgress?: boolean): Observable<HttpEvent<Array<ProductPrice>>>;
     public psStoreGet(gamename?: string, observe: any = 'body', reportProgress: boolean = false ): Observable<any> {
 
 
@@ -90,7 +90,7 @@ export class PsStoreService {
         const consumes: string[] = [
         ];
 
-        return this.httpClient.request<Array<GamePrice>>('get',`${this.basePath}/PsStore`,
+        return this.httpClient.request<Array<ProductPrice>>('get',`${this.basePath}/PsStore`,
             {
                 params: queryParameters,
                 withCredentials: this.configuration.withCredentials,
@@ -108,10 +108,10 @@ export class PsStoreService {
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public psStorePost(body?: GamePrice, observe?: 'body', reportProgress?: boolean): Observable<ShoppingFavorite>;
-    public psStorePost(body?: GamePrice, observe?: 'response', reportProgress?: boolean): Observable<HttpResponse<ShoppingFavorite>>;
-    public psStorePost(body?: GamePrice, observe?: 'events', reportProgress?: boolean): Observable<HttpEvent<ShoppingFavorite>>;
-    public psStorePost(body?: GamePrice, observe: any = 'body', reportProgress: boolean = false ): Observable<any> {
+    public psStorePost(body?: ProductPrice, observe?: 'body', reportProgress?: boolean): Observable<ShoppingFavorite>;
+    public psStorePost(body?: ProductPrice, observe?: 'response', reportProgress?: boolean): Observable<HttpResponse<ShoppingFavorite>>;
+    public psStorePost(body?: ProductPrice, observe?: 'events', reportProgress?: boolean): Observable<HttpEvent<ShoppingFavorite>>;
+    public psStorePost(body?: ProductPrice, observe: any = 'body', reportProgress: boolean = false ): Observable<any> {
 
 
         let headers = this.defaultHeaders;

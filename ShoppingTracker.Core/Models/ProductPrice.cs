@@ -2,7 +2,7 @@ using System;
 
 namespace ShoppingTracker.Core.Models
 {
-    public class GamePrice
+    public class ProductPrice
     {
         public string Id {get; set;}
         public string Platform {get; set;}
