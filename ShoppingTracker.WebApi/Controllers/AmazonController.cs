@@ -11,6 +11,7 @@ using Newtonsoft.Json;
 using ShoppingTracker.Core.Data;
 using System.Globalization;
 using Microsoft.ApplicationInsights;
+using System.Text;
 
 namespace ShoppingTracker.WebApi.Controllers
 {
@@ -34,13 +35,15 @@ namespace ShoppingTracker.WebApi.Controllers
         public async Task<IEnumerable<ProductPrice>> SearchProducts(string productName)
         {
             var products = new List<ProductPrice>();
-            using HttpClient client = new HttpClient();
+            using HttpClient client = new HttpClient(); 
             this.telemetry.TrackEvent($"Contacting {String.Format(_urlStore,productName)}");
             HttpResponseMessage response = await client.GetAsync(String.Format(_urlStore,productName));
             if (response.IsSuccessStatusCode)
             {
                 this.telemetry.TrackEvent($"Request {productName} Response {response.StatusCode}");
-                var htmlResponse = await response.Content.ReadAsStringAsync();
+                var byteArray = await response.Content.ReadAsByteArrayAsync(); 
+                var htmlResponse = Encoding.UTF8.GetString(byteArray, 0, byteArray.Length);
+                //var htmlResponse = await response.Content.ReadAsStringAsync();
                 this.telemetry.TrackEvent($"{htmlResponse}");
                 HtmlDocument doc = new HtmlDocument();
                 doc.LoadHtml(htmlResponse);
