@@ -10,6 +10,7 @@ using ShoppingTracker.Core.Models;
 using Newtonsoft.Json;
 using ShoppingTracker.Core.Data;
 using System.Globalization;
+using Microsoft.ApplicationInsights;
 
 namespace ShoppingTracker.WebApi.Controllers
 {
@@ -18,12 +19,14 @@ namespace ShoppingTracker.WebApi.Controllers
     public class AmazonController : ControllerBase
     { 
         private readonly ILogger<PsStoreController> _logger;
-        private readonly string _urlStore;        
+        private readonly string _urlStore;   
+        private TelemetryClient telemetry;     
 
-        public AmazonController(ILogger<PsStoreController> logger)
+        public AmazonController(ILogger<PsStoreController> logger, TelemetryClient telemetry)
         {
-            _logger = logger;
-            _urlStore = @"https://www.amazon.it/s?k={0}&__mk_it_IT=ÅMÅŽÕÑ&ref=sr_pg_1";
+            this._logger = logger;
+            this._urlStore = @"https://www.amazon.it/s?k={0}&__mk_it_IT=ÅMÅŽÕÑ&ref=sr_pg_1";
+            this.telemetry = telemetry;
             
         }
 
@@ -32,13 +35,19 @@ namespace ShoppingTracker.WebApi.Controllers
         {
             var products = new List<ProductPrice>();
             using HttpClient client = new HttpClient();
+            this.telemetry.TrackEvent($"Contacting {String.Format(_urlStore,productName)}");
             HttpResponseMessage response = await client.GetAsync(String.Format(_urlStore,productName));
             if (response.IsSuccessStatusCode)
             {
+                this.telemetry.TrackEvent($"Request {productName} Response {response.StatusCode}");
                 var htmlResponse = await response.Content.ReadAsStringAsync();
+                this.telemetry.TrackEvent($"{htmlResponse}");
                 HtmlDocument doc = new HtmlDocument();
                 doc.LoadHtml(htmlResponse);
+                this.telemetry.TrackEvent($"Contacting {String.Format(_urlStore,productName)}");
                 var nodes = doc.DocumentNode.SelectNodes("//*[@id=\"search\"]//div[@class=\"sg-col-inner\"]//div[@data-asin]");
+                var productCount = nodes != null ? nodes.Count() : 0;
+                this.telemetry.TrackEvent($"Products found: {productCount}");
                 foreach(var node in nodes) {
                     var newPrice = node.SelectSingleNode(".//span[@class=\"a-price\"]/span[@class=\"a-offscreen\"]");
                     var oldPrice = node.SelectSingleNode(".//span[@class=\"a-price a-text-price\"]/span[@class=\"a-offscreen\"]");
@@ -47,6 +56,7 @@ namespace ShoppingTracker.WebApi.Controllers
                     var platform = node.SelectSingleNode(".//a[@class=\"a-size-base a-link-normal a-text-bold\"]");
                     var prime = node.SelectSingleNode(".//i[@class=\"a-icon a-icon-prime a-icon-medium\"]");
                     string discountedText = null;
+                    this.telemetry.TrackEvent($"name: {name}");
                     _logger.LogInformation($"name: {name}");
                     if(oldPrice != null && newPrice != null) {
                         double newNumericPrice;
