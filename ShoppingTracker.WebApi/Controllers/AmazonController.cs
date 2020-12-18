@@ -25,7 +25,7 @@ namespace ShoppingTracker.WebApi.Controllers
         public AmazonController(ILogger<PsStoreController> logger, TelemetryClient telemetry)
         {
             this._logger = logger;
-            this._urlStore = @"https://www.amazon.it/s?k={0}&__mk_it_IT=ÅMÅŽÕÑ&ref=sr_pg_1";
+            this._urlStore = @"https://www.amazon.it/s?k={0}";
             this.telemetry = telemetry;
             
         }
