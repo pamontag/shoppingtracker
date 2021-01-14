@@ -1,14 +1,46 @@
 <div>
-        <div class="grid" *ngFor="let favorite of favorites">
-          <span
-            ><img mat-card-image width="75" height="75" src="{{ favorite.media }}"
-          /></span>
-          <span><div class="name">{{ favorite.name }}</div><div class="classification">{{ favorite.partitionKey }}</div><div class="platform">{{ favorite.favoritesDate | date:'short' }}</div><div class="platform">{{ favorite.discountDate| date:'short' }}</div></span> 
-          <span><div [ngClass]="{'oldprice': favorite.discount}">{{ favorite.price }}</div><div [ngClass]="{'discounted': favorite.discount, 'notDiscounted' : !favorite.discount}">{{ favorite.discountedPrice }}</div><div>{{ favorite.discount }}</div></span>
-          <span
-            ><button mat-icon-button color="primary" aria-label="Search" (click)="deleteFavorite(favorite)">
-              <mat-icon>delete</mat-icon>
-            </button></span
-          >
-        </div>
+  <mat-form-field [style.width.px]="100">
+    <mat-select placeholder="Select Store" [(ngModel)]="selectedStore" (selectionChange)="filterSearch()" >
+      <mat-option *ngFor="let store of enumStores" [value]="store">
+        {{stores[store]}}
+      </mat-option>
+    </mat-select>
+  </mat-form-field>
+  <div class="grid" *ngFor="let favorite of favorites">
+    <span
+      ><img mat-card-image width="75" height="75" src="{{ favorite.media }}"
+    /></span>
+    <span
+      ><div class="name">{{ favorite.name }}</div>
+      <div class="classification">{{ favorite.partitionKey }}</div>
+      <div class="platform">{{ favorite.favoritesDate | date: "short" }}</div>
+      <div class="platform">
+        {{ favorite.discountDate | date: "short" }}
+      </div></span
+    >
+    <span
+      ><div [ngClass]="{ oldprice: favorite.discount }">
+        {{ favorite.price }}
       </div>
+      <div
+        [ngClass]="{
+          discounted: favorite.discount,
+          notDiscounted: !favorite.discount
+        }"
+      >
+        {{ favorite.discountedPrice }}
+      </div>
+      <div>{{ favorite.discount }}</div></span
+    >
+    <span
+      ><button
+        mat-icon-button
+        color="primary"
+        aria-label="Search"
+        (click)="deleteFavorite(favorite)"
+      >
+        <mat-icon>delete</mat-icon>
+      </button></span
+    >
+  </div>
+</div>

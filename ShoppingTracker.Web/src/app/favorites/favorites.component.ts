@@ -1,6 +1,6 @@
 import { Component, OnInit } from "@angular/core";
 import { FavoritesService } from "../api/PsStoreFavoritesClient";
-import { ShoppingFavorite, MessageType } from "../model/models";
+import { ShoppingFavorite, MessageType, Stores } from "../model/models";
 import { MatDialog } from "@angular/material/dialog";
 import { DialogComponent } from "../dialog/dialog.component";
 @Component({
@@ -10,16 +10,31 @@ import { DialogComponent } from "../dialog/dialog.component";
 })
 export class FavoritesComponent implements OnInit {
   public favorites: Array<ShoppingFavorite> = null;
+  public allFavorites: Array<ShoppingFavorite> = null;
+  stores = Stores;
+  enumStores = [];
+  selectedStore = 0;
 
   constructor(
     private favoriteService: FavoritesService,
     public dialog: MatDialog
-  ) {}
+  ) {
+    this.enumStores = Object.keys(this.stores).filter(f => !isNaN(Number(f)));
+    this.selectedStore = 999;
+  }
 
   ngOnInit(): void {
     this.favoriteService.favoritesGet().subscribe(favorites => {
-      this.favorites = favorites;
+      this.allFavorites = this.favorites = favorites;
     });
+  }
+
+  filterSearch() {
+    if(this.selectedStore == 999) {
+      this.favorites = this.allFavorites
+    } else {
+      this.favorites = this.allFavorites.filter(f => f.store == this.selectedStore);
+    }
   }
 
   deleteFavorite(favorite: ShoppingFavorite) {

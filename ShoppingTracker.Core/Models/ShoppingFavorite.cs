@@ -21,7 +21,7 @@ namespace ShoppingTracker.Core.Models
         public DateTime FavoritesDate {get; set;}
         public string Media{get; set;}
 
-        public ShopTypeEnum Store { get; set;}
+        public int Store { get; set;}
         
     }
 

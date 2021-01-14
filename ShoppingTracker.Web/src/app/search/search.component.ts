@@ -21,6 +21,7 @@ export class SearchComponent implements OnInit {
     public dialog: MatDialog
   ) {
     this.enumStores = Object.keys(this.stores).filter(f => !isNaN(Number(f)));
+    this.enumStores = this.enumStores.filter(f => f != 999);
   }
 
   ngOnInit(): void {}

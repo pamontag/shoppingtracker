@@ -112,7 +112,7 @@ namespace ShoppingTracker.WebApi.Controllers
                 FavoritesDate = DateTime.Now,
                 Price = product.Price,
                 Media = product.Media,
-                Store = ShopTypeEnum.Amazon
+                Store = (int)ShopTypeEnum.Amazon
             };
             var table = await ShoppingTrackerDAL.CreateTableAsync(ShoppingTrackerDAL.SHOPPING_FAVORITES_TABLE);
             var favorite = await ShoppingTrackerDAL.InsertOrMergeShoppingFavoriteAsync(table, shoppingFavorite);

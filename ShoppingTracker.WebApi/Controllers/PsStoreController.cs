@@ -67,7 +67,7 @@ namespace ShoppingTracker.WebApi.Controllers
                 FavoritesDate = DateTime.Now,
                 Price = game.Price,
                 Media = game.Media,
-                Store = ShopTypeEnum.PSStore
+                Store = (int)ShopTypeEnum.PSStore
             };
             var table = await ShoppingTrackerDAL.CreateTableAsync(ShoppingTrackerDAL.SHOPPING_FAVORITES_TABLE);
             var favorite = await ShoppingTrackerDAL.InsertOrMergeShoppingFavoriteAsync(table,shoppingFavorite);
