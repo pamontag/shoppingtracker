@@ -55,7 +55,8 @@ namespace ShoppingTracker.WebApi.Controllers
                     if (!String.IsNullOrWhiteSpace(node.Attributes["data-asin"].Value))
                     {
                         var name = node.SelectSingleNode(".//span[@class=\"a-size-base-plus a-color-base a-text-normal\"]");
-                        if (name != null)
+                        var nameString = name != null ? name.InnerText.Trim() : null;
+                        if (nameString != null)
                         {
                             var newPrice = node.SelectSingleNode(".//span[@class=\"a-price\"]/span[@class=\"a-offscreen\"]");
                             var oldPrice = node.SelectSingleNode(".//span[@class=\"a-price a-text-price\"]/span[@class=\"a-offscreen\"]");
@@ -63,7 +64,6 @@ namespace ShoppingTracker.WebApi.Controllers
                             var platform = node.SelectSingleNode(".//a[@class=\"a-size-base a-link-normal a-text-bold\"]");
                             var prime = node.SelectSingleNode(".//i[@class=\"a-icon a-icon-prime a-icon-medium\"]");
                             string discountedText = null;
-                            var nameString = name != null ? name.InnerText.Trim() : null;
                             this.telemetry.TrackEvent($"name: {nameString}");
                             _logger.LogInformation($"name: {nameString}");
                             if (oldPrice != null && newPrice != null)
