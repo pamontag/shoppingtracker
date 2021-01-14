@@ -36,7 +36,8 @@ namespace ShoppingTracker.WebApi.Controllers
         {
             var products = new List<ProductPrice>();
             using HttpClient client = new HttpClient();
-            this.telemetry.TrackEvent($"Contacting {String.Format(_urlStore, productName)}");
+            client.DefaultRequestHeaders.Add("Accept-Language", "it-IT");
+            this.telemetry.TrackEvent($"Contacting {String.Format(_urlStore, productName)}"); 
             HttpResponseMessage response = await client.GetAsync(String.Format(_urlStore, productName));
             if (response.IsSuccessStatusCode)
             {
