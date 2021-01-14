@@ -12,6 +12,8 @@ using ShoppingTracker.Core.Data;
 using System.Globalization;
 using Microsoft.ApplicationInsights;
 using System.Text;
+using System.IO;
+using System.IO.Compression;
 
 namespace ShoppingTracker.WebApi.Controllers
 {
@@ -37,13 +39,25 @@ namespace ShoppingTracker.WebApi.Controllers
             var products = new List<ProductPrice>();
             using HttpClient client = new HttpClient();
             client.DefaultRequestHeaders.Add("Accept-Language", "it-IT");
-            this.telemetry.TrackEvent($"Contacting {String.Format(_urlStore, productName)}"); 
-            HttpResponseMessage response = await client.GetAsync(String.Format(_urlStore, productName));
+            using HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Get, new Uri(String.Format(_urlStore, productName)));
+            request.Headers.TryAddWithoutValidation("Accept", "text/html,application/xhtml+xml,application/xml");
+            request.Headers.TryAddWithoutValidation("Accept-Encoding", "gzip, deflate");
+            request.Headers.TryAddWithoutValidation("User-Agent", "Mozilla/5.0 (Windows NT 6.2; WOW64; rv:19.0) Gecko/20100101 Firefox/19.0");
+            request.Headers.TryAddWithoutValidation("Accept-Charset", "ISO-8859-1");
+            this.telemetry.TrackEvent($"Contacting {String.Format(_urlStore, productName)}");             
+            using HttpResponseMessage response = await client.SendAsync(request).ConfigureAwait(false);
             if (response.IsSuccessStatusCode)
             {
                 this.telemetry.TrackEvent($"Request {productName} Response {response.StatusCode}");
-                var byteArray = await response.Content.ReadAsByteArrayAsync();
-                var htmlResponse = Encoding.UTF8.GetString(byteArray, 0, byteArray.Length);
+                var htmlResponse = String.Empty;
+                using (var responseStream = await response.Content.ReadAsStreamAsync().ConfigureAwait(false))
+                using (var decompressedStream = new GZipStream(responseStream, CompressionMode.Decompress))
+                using (var streamReader = new StreamReader(decompressedStream))
+                {
+                    htmlResponse = await streamReader.ReadToEndAsync().ConfigureAwait(false);
+                }
+                // var byteArray = await response.Content.ReadAsByteArrayAsync();
+                // var htmlResponse = Encoding.UTF8.GetString(byteArray, 0, byteArray.Length);
                 //var htmlResponse = await response.Content.ReadAsStringAsync();
                 this.telemetry.TrackEvent($"{htmlResponse}");
                 HtmlDocument doc = new HtmlDocument();
