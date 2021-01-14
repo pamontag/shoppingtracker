@@ -19,7 +19,7 @@ namespace ShoppingTracker.WebApi.Controllers
         public async Task<IEnumerable<ShoppingFavorite>> GetFavorites()
         {
             var table = await ShoppingTrackerDAL.CreateTableAsync(ShoppingTrackerDAL.SHOPPING_FAVORITES_TABLE);
-            return await ShoppingTrackerDAL.GetShoppingFavoriteAsync(table); 
+            return await ShoppingTrackerDAL.GetShoppingFavoriteAsync(table);
         }
 
         [HttpDelete]

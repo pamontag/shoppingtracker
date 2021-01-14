@@ -47,7 +47,6 @@ namespace ShoppingTracker.WebApi.Controllers
                 this.telemetry.TrackEvent($"{htmlResponse}");
                 HtmlDocument doc = new HtmlDocument();
                 doc.LoadHtml(htmlResponse);
-                this.telemetry.TrackEvent($"Contacting {String.Format(_urlStore, productName)}");
                 var nodes = doc.DocumentNode.SelectNodes("//*[@id=\"search\"]//div[@class=\"sg-col-inner\"]//div[@data-asin]");
                 var productCount = nodes != null ? nodes.Count() : 0;
                 this.telemetry.TrackEvent($"Products found: {productCount}");
@@ -55,41 +54,44 @@ namespace ShoppingTracker.WebApi.Controllers
                 {
                     if (!String.IsNullOrWhiteSpace(node.Attributes["data-asin"].Value))
                     {
-                        var newPrice = node.SelectSingleNode(".//span[@class=\"a-price\"]/span[@class=\"a-offscreen\"]");
-                        var oldPrice = node.SelectSingleNode(".//span[@class=\"a-price a-text-price\"]/span[@class=\"a-offscreen\"]");
                         var name = node.SelectSingleNode(".//span[@class=\"a-size-base-plus a-color-base a-text-normal\"]");
-                        var media = node.SelectSingleNode(".//span/a/div/img");
-                        var platform = node.SelectSingleNode(".//a[@class=\"a-size-base a-link-normal a-text-bold\"]");
-                        var prime = node.SelectSingleNode(".//i[@class=\"a-icon a-icon-prime a-icon-medium\"]");
-                        string discountedText = null;
-                        var nameString = name != null ? name.InnerText.Trim() : null;
-                        this.telemetry.TrackEvent($"name: {nameString}");
-                        _logger.LogInformation($"name: {nameString}");
-                        if (oldPrice != null && newPrice != null)
+                        if (name != null)
                         {
-                            double newNumericPrice;
-                            double oldNumericPrice;
-                            var oldpriceString = oldPrice.InnerText.Replace("€", "").Replace(",", ".").Trim();
-                            var newpriceString = newPrice.InnerText.Replace("€", "").Replace(",", ".").Trim();
-                            _logger.LogInformation($"newprice: {newpriceString} oldprice: {oldpriceString}");
-                            if (double.TryParse(newpriceString, NumberStyles.Any, CultureInfo.InvariantCulture, out newNumericPrice) && double.TryParse(oldpriceString, NumberStyles.Any, CultureInfo.InvariantCulture, out oldNumericPrice))
+                            var newPrice = node.SelectSingleNode(".//span[@class=\"a-price\"]/span[@class=\"a-offscreen\"]");
+                            var oldPrice = node.SelectSingleNode(".//span[@class=\"a-price a-text-price\"]/span[@class=\"a-offscreen\"]");
+                            var media = node.SelectSingleNode(".//span/a/div/img");
+                            var platform = node.SelectSingleNode(".//a[@class=\"a-size-base a-link-normal a-text-bold\"]");
+                            var prime = node.SelectSingleNode(".//i[@class=\"a-icon a-icon-prime a-icon-medium\"]");
+                            string discountedText = null;
+                            var nameString = name != null ? name.InnerText.Trim() : null;
+                            this.telemetry.TrackEvent($"name: {nameString}");
+                            _logger.LogInformation($"name: {nameString}");
+                            if (oldPrice != null && newPrice != null)
                             {
-                                discountedText = string.Format("{0:N2}%", (1 - (newNumericPrice / oldNumericPrice)) * 100);
-                                _logger.LogInformation($"discount {discountedText}");
+                                double newNumericPrice;
+                                double oldNumericPrice;
+                                var oldpriceString = oldPrice.InnerText.Replace("€", "").Replace(",", ".").Trim();
+                                var newpriceString = newPrice.InnerText.Replace("€", "").Replace(",", ".").Trim();
+                                _logger.LogInformation($"newprice: {newpriceString} oldprice: {oldpriceString}");
+                                if (double.TryParse(newpriceString, NumberStyles.Any, CultureInfo.InvariantCulture, out newNumericPrice) && double.TryParse(oldpriceString, NumberStyles.Any, CultureInfo.InvariantCulture, out oldNumericPrice))
+                                {
+                                    discountedText = string.Format("{0:N2}%", (1 - (newNumericPrice / oldNumericPrice)) * 100);
+                                    _logger.LogInformation($"discount {discountedText}");
+                                }
                             }
+                            var product = new ProductPrice()
+                            {
+                                Id = node.Attributes["data-asin"].Value,
+                                Name = nameString,
+                                Price = oldPrice != null ? oldPrice.InnerText : newPrice != null ? newPrice.InnerText : null,
+                                DiscountedPrice = newPrice != null ? newPrice.InnerText : null,
+                                Discount = discountedText,
+                                Media = media != null && media.Attributes["src"] != null ? media.Attributes["src"].Value : null,
+                                Platform = platform != null && platform.InnerText != null ? platform.InnerText.Trim() : null,
+                                Classification = prime != null ? "PRIME" : null
+                            };
+                            products.Add(product);
                         }
-                        var product = new ProductPrice()
-                        {
-                            Id = node.Attributes["data-asin"].Value,
-                            Name = nameString,
-                            Price = oldPrice != null ? oldPrice.InnerText : newPrice != null ? newPrice.InnerText : null,
-                            DiscountedPrice = newPrice != null ? newPrice.InnerText : null,
-                            Discount = discountedText,
-                            Media = media != null && media.Attributes["src"] != null ? media.Attributes["src"].Value : null,
-                            Platform = platform != null && platform.InnerText != null ? platform.InnerText.Trim() : null,
-                            Classification = prime != null ? "PRIME" : null
-                        };
-                        products.Add(product);
                     }
                 }
                 return products;

@@ -2,6 +2,7 @@ using System.Threading.Tasks;
 using Microsoft.Azure.Cosmos.Table;
 using Microsoft.Azure.Documents;
 using System;
+using System.Linq;
 using ShoppingTracker.Core.Config;
 using ShoppingTracker.Core.Models;
 using System.Collections.Generic;
@@ -94,8 +95,8 @@ namespace ShoppingTracker.Core.Data
                 Console.ReadLine();
                 throw;
             }
-        }
-
+        } 
+        
         public static async Task<List<ShoppingFavorite>> GetShoppingFavoriteAsync(CloudTable table)
         {
             try
@@ -108,7 +109,7 @@ namespace ShoppingTracker.Core.Data
                     entities.AddRange(queryResult.Results);
                     token = queryResult.ContinuationToken;
                 } while (token != null);
-                return entities;
+                return entities.OrderByDescending(f => f.FavoritesDate).ToList();
             }
             catch (StorageException e)
             {

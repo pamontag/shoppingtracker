@@ -52,10 +52,16 @@ namespace ShoppingTracker.Function
                 {
                     var jsonResponse = await response.Content.ReadAsStringAsync();
                     var game = JsonConvert.DeserializeObject<PsStoreGame>(jsonResponse);
-                    favorite.Discount = game.data.productRetrieve.webctas[0].price.discountText;
-                    favorite.DiscountedPrice = game.data.productRetrieve.webctas[0].price.discountedPrice;
-                    favorite.DiscountDate = DateTime.Now; 
-                    await ShoppingTrackerDAL.InsertOrMergeShoppingFavoriteAsync(table,favorite);              
+                    if(game.data.productRetrieve != null) {
+                        log.LogInformation($"Discount {game.data.productRetrieve.webctas[0].price.discountText} for favorite {favorite.Name}");
+                        favorite.Discount = String.IsNullOrEmpty(game.data.productRetrieve.webctas[0].price.discountText) ? String.Empty : game.data.productRetrieve.webctas[0].price.discountText;
+                        favorite.DiscountedPrice = game.data.productRetrieve.webctas[0].price.discountedPrice;
+                        favorite.DiscountDate = DateTime.Now; 
+                        favorite.Price = game.data.productRetrieve.webctas[0].price.basePrice;
+                        await ShoppingTrackerDAL.InsertOrMergeShoppingFavoriteAsync(table,favorite);  
+                    } else {
+                        log.LogError($"Product is no more available in the store: {favorite.Name}");
+                    }           
                 }  else {
                     log.LogError($"Impossible to update favorite: {favorite.Name}");
                 }
