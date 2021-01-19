@@ -20,6 +20,7 @@ steps:
   inputs:
     PathtoPublish: '$(Build.SourcesDirectory)/owaspzap'
     ArtifactName: 'ZAP Reports'
+
 - bash: |
    sudo npm install -g handlebars-cmd
 
@@ -79,6 +80,10 @@ steps:
   displayName: 'generate nunit type file'
   condition: always()
 
+- task: PublishBuildArtifacts@1
+  inputs:
+    PathtoPublish: '$(Build.SourcesDirectory)/owaspzap'
+    ArtifactName: 'ZAP Reports'
 - task: PublishTestResults@2
   displayName: 'Publish Test Results **/TEST-*.xml'
   inputs:
