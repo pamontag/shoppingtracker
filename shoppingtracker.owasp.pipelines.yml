@@ -15,7 +15,6 @@ steps:
   inputs:
     scantype: 'targetedScan'
     url: 'https://bit.ly/shoppingtracker'
-    aggressivemode: true
 - task: PublishBuildArtifacts@1
   inputs:
     PathtoPublish: '$(Build.SourcesDirectory)/owaspzap'
