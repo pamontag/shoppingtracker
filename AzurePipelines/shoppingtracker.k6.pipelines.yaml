@@ -8,7 +8,7 @@ trigger:
 
 pool:
   vmImage: 'ubuntu-latest'
-
+steps:
 - task: k6-load-test@0
   inputs:
     filename: './AzurePipelines/K6/loadtestk6.js'
