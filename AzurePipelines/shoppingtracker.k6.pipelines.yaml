@@ -1,0 +1,14 @@
+# Starter pipeline
+# Start with a minimal pipeline that you can customize to build and deploy your code.
+# Add steps that build, run tests, deploy, and more:
+# https://aka.ms/yaml
+
+trigger:
+- main
+
+pool:
+  vmImage: 'ubuntu-latest'
+
+- task: k6-load-test@0
+  inputs:
+    filename: './AzurePipelines/K6/loadtestk6.js'
